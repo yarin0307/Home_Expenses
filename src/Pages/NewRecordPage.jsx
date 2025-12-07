@@ -81,7 +81,7 @@ export default function NewRecordPage() {
     fetchExpensesCategories();
   }, []);
 
-  const handleSignUp = async () => {
+  const handleNewRecord = async () => {
     try {
       const docRef = await addDoc(collection(db, "Expenses"), {
         expense_cat: selectedExpenseCategory,
@@ -91,7 +91,7 @@ export default function NewRecordPage() {
         expense_date: Timestamp.fromDate(new Date(expenseDate)),
         expense_description: expenseDescription,
         expense_groupId: Number(user.groupId),
-        expense_userFname: "Yarin",
+        expense_userFname: user.fname,
         expense_userId: Number(user.id),
       });
       toast.success("New record added successfully!");
@@ -219,7 +219,7 @@ export default function NewRecordPage() {
               <Button
                 style={{ marginTop: "15px", fontWeight: "bold" }}
                 color="primary"
-                onClick={handleSignUp}
+                onClick={handleNewRecord}
                 className="ml-auto"
               >
                 Add New Record

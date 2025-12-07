@@ -28,6 +28,7 @@ import { useContext } from "react";
 import { AuthContext } from "../Context/AuthProvider";
 import { useNavigate, useLocation } from "react-router-dom";
 import { use } from "react";
+import { doc, updateDoc } from "firebase/firestore";
 
 export default function UpdateRecordPage() {
   const getFirstDayOfCurrentMonth = () => {
@@ -83,9 +84,13 @@ export default function UpdateRecordPage() {
     fetchExpensesCategories();
   }, []);
 
-  const handleSignUp = async () => {
+  const handleUpdateRecord = async () => {
+    const ref = doc(db, "Expenses", expense.id);
+    
+
+    console.log(expense.id);
     try {
-      const docRef = await addDoc(collection(db, "Expenses"), {
+      await updateDoc(ref, {
         expense_cat: selectedExpenseCategory,
         expense_name: selectedExpenseCategoryName,
         expense_type: selectedExpenseType,
@@ -93,15 +98,15 @@ export default function UpdateRecordPage() {
         expense_date: Timestamp.fromDate(new Date(expenseDate)),
         expense_description: expenseDescription,
         expense_groupId: Number(user.groupId),
-        expense_userFname: "Yarin",
+        expense_userFname: expense.expense_userFname,
         expense_userId: Number(user.id),
       });
-      toast.success("New record added successfully!");
+      toast.success("Record updated successfully!");
       setTimeout(() => {
         navigate("/home-expenses");
       }, 5000);
     } catch (error) {
-      toast.error("Error adding new record");
+      toast.error("Error updating record");
     }
   };
   const handleSelectedExpenseCategory = (value) => {
@@ -226,7 +231,7 @@ export default function UpdateRecordPage() {
               <Button
                 style={{ marginTop: "15px", fontWeight: "bold" }}
                 color="primary"
-                onClick={handleSignUp}
+                onClick={handleUpdateRecord}
                 className="ml-auto"
               >
                 Update Record
